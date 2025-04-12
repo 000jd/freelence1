@@ -1,0 +1,57 @@
+backtest:
+  initial_capital: 10000
+  long_threshold: 0.6
+  max_loss_per_trade: 0.02
+  position_size: 0.1
+  short_threshold: 0.4
+  trailing_stop: 0.015
+dataset:
+  sequence_lengths:
+  - 5
+  - 20
+  - 60
+  target_asset: S&P_500_Price
+  target_horizon: 1
+  test_size: 0.2
+  val_size: 0.1
+model:
+  gating:
+    hidden_dim: 32
+  lstm:
+    dropout: 0.2
+    fc_dropout: 0.3
+    hidden_dim1: 64
+    hidden_dim2: 32
+    num_layers: 2
+  transformer:
+    d_model: 64
+    dropout: 0.1
+    nhead: 4
+    num_layers: 2
+  wavenet:
+    dropout: 0.3
+    filters: 32
+rl:
+  batch_size: 32
+  clip_range: 0.2
+  gae_lambda: 0.95
+  gamma: 0.99
+  learning_rate: 0.0003
+  n_epochs: 10
+  n_steps: 64
+  total_timesteps: 5000
+training:
+  batch_size: 32
+  early_stopping:
+    min_delta: 0.001
+    patience: 10
+  epochs: 50
+  focal_loss:
+    alpha: 0.25
+    gamma: 2
+  learning_rate: 0.001
+  scheduler:
+    T_0: 10
+    T_mult: 2
+    eta_min_factor: 0.0001
+  weight_decay: 0.01
