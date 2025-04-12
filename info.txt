@@ -1,0 +1,73 @@
+Missing values:
+Unnamed: 0             0
+Date                   0
+Natural_Gas_Price      0
+Natural_Gas_Vol.       4
+Crude_oil_Price        0
+Crude_oil_Vol.        23
+Copper_Price           0
+Copper_Vol.           37
+Bitcoin_Price          0
+Bitcoin_Vol.           0
+Platinum_Price         0
+Platinum_Vol.        607
+Ethereum_Price         0
+Ethereum_Vol.          0
+S&P_500_Price          0
+Nasdaq_100_Price       0
+Nasdaq_100_Vol.        1
+Apple_Price            0
+Apple_Vol.             0
+Tesla_Price            0
+Tesla_Vol.             0
+Microsoft_Price        0
+Microsoft_Vol.         0
+Silver_Price           0
+Silver_Vol.           47
+Google_Price           0
+Google_Vol.            0
+Nvidia_Price           0
+Nvidia_Vol.            0
+Berkshire_Price        0
+Berkshire_Vol.         0
+Netflix_Price          0
+Netflix_Vol.           0
+Amazon_Price           0
+Amazon_Vol.            0
+Meta_Price             0
+Meta_Vol.              0
+Gold_Price             0
+Gold_Vol.              2
+dtype: int64
+
+
+Basic statistics for price data:
+       Natural_Gas_Price  Crude_oil_Price  Copper_Price  Apple_Price  \
+count        1243.000000      1243.000000   1243.000000  1243.000000   
+mean            3.494714        67.577064      3.541957   125.566533   
+std             1.822540        20.465500      0.702819    46.114122   
+min             1.482000       -37.630000      2.100500    42.360000   
+25%             2.347500        55.095000      2.858750    79.505000   
+50%             2.702000        69.230000      3.666000   136.760000   
+75%             4.055500        80.455000      4.137250   162.915000   
+max             9.647000       123.700000      4.937500   198.110000   
+
+       Tesla_Price  Microsoft_Price  Silver_Price  Google_Price  Nvidia_Price  \
+count  1243.000000      1243.000000   1243.000000   1243.000000   1243.000000   
+mean    173.590442       241.240072     21.588977     99.670829    187.285841   
+std     106.688094        73.429838      3.859288     29.766893    134.679941   
+min      11.930000       105.250000     11.772000     51.940000     33.450000   
+25%      53.335000       182.525000     17.998500     71.185000     73.905000   
+50%     202.070000       245.380000     22.758000    101.240000    151.590000   
+75%     251.470000       297.120000     24.512000    127.205000    242.140000   
+max     409.970000       411.220000     29.418000    153.510000    661.600000   
+
+       Netflix_Price  Amazon_Price   Meta_Price  
+count    1243.000000   1243.000000  1243.000000  
+mean      404.839541    128.683234   239.728134  
+std       114.989473     30.808631    71.015427  
+min       166.370000     79.410000    88.910000  
+25%       323.010000     96.260000   183.355000  
+50%       384.150000    128.730000   224.430000  
+75%       495.365000    158.110000   301.650000  
+max       691.690000    186.570000   474.990000  
