@@ -264,10 +264,11 @@ def backtest_trading_strategy(model: MixtureOfExperts, test_dataset, config) -> 
             elif prediction.item() < short_threshold:  # Require stronger conviction for short
                 signal = -1
 
+            # Get current price for all calculations
+            current_price = test_dataset[i]['expert_inputs']['expert1_input'][-1, test_dataset.target_idx]
+
             # Apply risk management
             if position != 0:
-                # Check stop loss
-                current_price = test_dataset[i]['expert_inputs']['expert1_input'][-1, test_dataset.target_idx]
                 trade_value = (current_price - entry_price) * position * position_size_adj * capital
 
                 if trade_value < -max_loss_per_trade * capital:

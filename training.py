@@ -194,28 +194,11 @@ def train_mixture_of_experts(dataset, config) -> MixtureOfExperts:
     """Enhanced training with better regularization and loss function"""
     # Extract configuration parameters
     batch_size = config.get('training', 'batch_size', 32)
-    epochs = config.get('training', 'epochs', 50)
-    lr = config.get('training', 'learning_rate', 0.001)
-    weight_decay = config.get('training', 'weight_decay', 0.01)
 
-    # Focal loss parameters
-    alpha = config.get('training', 'focal_loss', {}).get('alpha', 0.25)
-    gamma = config.get('training', 'focal_loss', {}).get('gamma', 2)
-
-    # Early stopping parameters
-    patience = config.get('training', 'early_stopping', {}).get('patience', 10)
-    min_delta = config.get('training', 'early_stopping', {}).get('min_delta', 0.001)
-
-    # Scheduler parameters
-    T_0 = config.get('training', 'scheduler', {}).get('T_0', 10)
-    T_mult = config.get('training', 'scheduler', {}).get('T_mult', 2)
-    eta_min_factor = config.get('training', 'scheduler', {}).get('eta_min_factor', 0.0001)
-
-    # Get datasets
+    # Create dataloaders
     train_dataset = dataset.get_train_dataset()
     val_dataset = dataset.get_val_dataset()
 
-    # Create dataloaders
     train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     val_dataloader = DataLoader(val_dataset, batch_size=batch_size)
 
@@ -223,46 +206,61 @@ def train_mixture_of_experts(dataset, config) -> MixtureOfExperts:
     sample_batch = next(iter(train_dataloader))
     input_dim = sample_batch['expert_inputs']['expert1_input'].shape[-1]
 
-    # Create model with configuration
+    # Get sequence lengths from dataset
+    sequence_lengths = dataset.sequence_lengths
+
+    # Create model config
     model_config = {
         'lstm': {
-            'hidden_dim1': config.get('model', 'lstm', {}).get('hidden_dim1', 64),
-            'hidden_dim2': config.get('model', 'lstm', {}).get('hidden_dim2', 32),
-            'num_layers': config.get('model', 'lstm', {}).get('num_layers', 2),
-            'dropout': config.get('model', 'lstm', {}).get('dropout', 0.2),
-            'fc_dropout': config.get('model', 'lstm', {}).get('fc_dropout', 0.3)
+            'hidden_dim1': config.get('model', 'lstm_hidden_dim1', 64),
+            'hidden_dim2': config.get('model', 'lstm_hidden_dim2', 32),
+            'num_layers': config.get('model', 'lstm_num_layers', 2),
+            'dropout': config.get('model', 'lstm_dropout', 0.2),
+            'fc_dropout': config.get('model', 'lstm_fc_dropout', 0.3)
         },
-        'wavenet': {
-            'filters': config.get('model', 'wavenet', {}).get('filters', 32),
-            'dropout': config.get('model', 'wavenet', {}).get('dropout', 0.3)
+        'wavenet': {  # Added missing wavenet configuration
+            'filters': config.get('model', 'wavenet_filters', 32),
+            'dropout': config.get('model', 'wavenet_dropout', 0.3)
         },
         'transformer': {
-            'd_model': config.get('model', 'transformer', {}).get('d_model', 64),
-            'nhead': config.get('model', 'transformer', {}).get('nhead', 4),
-            'num_layers': config.get('model', 'transformer', {}).get('num_layers', 2),
-            'dropout': config.get('model', 'transformer', {}).get('dropout', 0.1)
+            'd_model': config.get('model', 'transformer_d_model', 64),
+            'nhead': config.get('model', 'transformer_nhead', 4),
+            'num_layers': config.get('model', 'transformer_num_layers', 2),
+            'dropout': config.get('model', 'transformer_dropout', 0.1)
         },
         'gating': {
-            'hidden_dim': config.get('model', 'gating', {}).get('hidden_dim', 32)
+            'hidden_dim': config.get('model', 'gating_hidden_dim', 32)
         }
     }
 
-    model = MixtureOfExperts(input_dim, dataset.sequence_lengths, model_config)
+    # Create model
+    model = MixtureOfExperts(input_dim, sequence_lengths, model_config)
 
     # Create loss function, optimizer, and scheduler
-    criterion = FocalLoss(alpha=alpha, gamma=gamma)
-    optimizer = optim.AdamW(model.parameters(), lr=lr, weight_decay=weight_decay)
+    criterion = FocalLoss(
+        alpha=config.get('training', 'focal_loss_alpha', 0.25),
+        gamma=config.get('training', 'focal_loss_gamma', 2)
+    )
+    optimizer = optim.AdamW(
+        model.parameters(),
+        lr=config.get('training', 'learning_rate', 0.001),
+        weight_decay=config.get('training', 'weight_decay', 0.01)
+    )
 
     scheduler = optim.lr_scheduler.CosineAnnealingWarmRestarts(
         optimizer,
-        T_0=T_0,
-        T_mult=T_mult,
-        eta_min=lr * eta_min_factor
+        T_0=config.get('training', 'scheduler_T_0', 10),
+        T_mult=config.get('training', 'scheduler_T_mult', 2),
+        eta_min=config.get('training', 'learning_rate', 0.001) * config.get('training', 'scheduler_eta_min_factor', 0.0001)
     )
 
-    early_stopper = EarlyStopping(patience=patience, min_delta=min_delta)
+    early_stopper = EarlyStopping(
+        patience=config.get('training', 'early_stopping_patience', 10),
+        min_delta=config.get('training', 'early_stopping_min_delta', 0.001)
+    )
 
     # Training loop
+    epochs = config.get('training', 'epochs', 50)
     for epoch in range(epochs):
         train_loss = train_one_epoch(model, train_dataloader, criterion, optimizer)
 

@@ -25,9 +25,15 @@ def main(config_path: str = 'config.yaml', csv_path: str = None) -> Tuple[Any, D
     # Extract dataset parameters
     dataset_config = config.get('dataset')
     csv_file = csv_path if csv_path else os.environ.get('CSV_FILE', 'stock_data.csv')
-    target_asset = dataset_config.get('target_asset', 'S&P_500_Price')
-    sequence_lengths = dataset_config.get('sequence_lengths', [5, 20, 60])
-    target_horizon = dataset_config.get('target_horizon', 1)
+    target_asset = dataset_config.get('target_asset', 'S&P_500_return')  # Using return instead of price
+
+    # Using approximately [2 weeks, 1 month, 3 months] of trading days
+    # 3 months of data to predict 1 month ahead as suggested
+    sequence_lengths = dataset_config.get('sequence_lengths', [10, 20, 60])
+
+    # Predicting 20 trading days ahead (approximately 1 month) as suggested
+    target_horizon = dataset_config.get('target_horizon', 20)
+
     test_size = dataset_config.get('test_size', 0.2)
     val_size = dataset_config.get('val_size', 0.1)
 
