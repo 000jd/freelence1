@@ -523,7 +523,7 @@ def save_model(model: MixtureOfExperts, filename: str = 'mixture_of_experts_mode
     print(f"Model saved to {filename}")
 
 
-def compare_investment_strategies(model: MixtureOfExperts, test_dataset, initial_investment: float = 100000.0) -> Dict[str, Any]:
+def compare_investment_strategies(model: MixtureOfExperts, test_dataset, initial_investment: float = 200000.0) -> Dict[str, Any]:
     """
     Compare different investment strategies:
     1. Buy and Hold: Invest all money at the beginning and hold
