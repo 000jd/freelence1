@@ -2,6 +2,8 @@ import torch
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import pandas as pd
+import random
 from torch.utils.data import DataLoader
 from sklearn.metrics import confusion_matrix, f1_score, precision_score, recall_score
 from typing import Dict, Any, List, Optional
@@ -519,6 +521,186 @@ def save_model(model: MixtureOfExperts, filename: str = 'mixture_of_experts_mode
     """Save model to file"""
     torch.save(model.state_dict(), filename)
     print(f"Model saved to {filename}")
+
+
+def compare_investment_strategies(model: MixtureOfExperts, test_dataset, initial_investment: float = 100000.0) -> Dict[str, Any]:
+    """
+    Compare different investment strategies:
+    1. Buy and Hold: Invest all money at the beginning and hold
+    2. Model-based Strategy: Invest monthly based on the model's predictions
+    3. Random Strategy: Randomly buy or sell each month
+
+    Args:
+        model: Trained model
+        test_dataset: Test dataset
+        initial_investment: Initial investment amount (default: $100,000)
+
+    Returns:
+        Dictionary with performance metrics and data for plotting
+    """
+    model.eval()
+
+    # Get the original dataframe to extract dates and actual prices
+    original_dataset = test_dataset.dataset
+    df = original_dataset.df.copy()
+
+    # Create a dataloader with batch_size=1 to process one month at a time
+    dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False)
+
+    # Initialize strategies
+    strategies = {
+        'Buy and Hold': {'capital': initial_investment, 'history': [initial_investment]},
+        'Model Strategy': {'capital': initial_investment, 'history': [initial_investment]},
+        'Random Strategy': {'capital': initial_investment, 'history': [initial_investment]}
+    }
+
+    # Get the target asset name (for display purposes)
+    target_asset = original_dataset.target_asset
+
+    # Track monthly returns of the target asset
+    monthly_returns = []
+    dates = []
+
+    # Process each month
+    print(f"\nComparing investment strategies with ${initial_investment:,.2f} initial capital")
+    print(f"Target asset: {target_asset}")
+    print("\nMonthly performance:")
+    print("-" * 80)
+    print(f"{'Month':^10} | {'Asset Return':^12} | {'Buy & Hold':^15} | {'Model Strategy':^15} | {'Random Strategy':^15}")
+    print("-" * 80)
+
+    # Get the first date for buy and hold strategy
+    start_idx = test_dataset.indices[0]
+    start_date = df.iloc[start_idx + original_dataset.max_seq_len]['Date']
+
+    # Initialize positions
+    positions = {
+        'Buy and Hold': 1,  # Always invested
+        'Model Strategy': 0,  # Start with cash
+        'Random Strategy': 0   # Start with cash
+    }
+
+    # Process each prediction (approximately monthly)
+    for i, batch in enumerate(dataloader):
+        # Skip if we don't have enough data for the target horizon
+        if i >= len(test_dataset) - original_dataset.target_horizon:
+            break
+
+        # Get model prediction
+        expert_inputs = batch['expert_inputs']
+        market_conditions = batch['market_conditions']
+        prediction, _, _ = model(expert_inputs, market_conditions)
+        model_signal = 1 if prediction.item() > 0.5 else 0  # 1 = buy, 0 = sell/cash
+
+        # Generate random signal
+        random_signal = random.randint(0, 1)  # 1 = buy, 0 = sell/cash
+
+        # Get current date
+        current_idx = test_dataset.indices[i]
+        current_date = df.iloc[current_idx + original_dataset.max_seq_len]['Date']
+        dates.append(current_date)
+
+        # Calculate return for this period
+        future_idx = current_idx + original_dataset.max_seq_len + original_dataset.target_horizon
+        if future_idx < len(df):
+            # For log returns, we can simply add them to get cumulative return
+            cumulative_return = df.iloc[current_idx + original_dataset.max_seq_len:future_idx][target_asset].sum()
+            monthly_returns.append(cumulative_return)
+
+            # Update each strategy
+            for strategy in strategies:
+                capital = strategies[strategy]['capital']
+                position = positions[strategy]
+
+                # Apply return based on position
+                if position == 1:  # Invested
+                    # For log returns, exp(return) gives the multiplier
+                    capital *= np.exp(cumulative_return)
+
+                # Update position for next period based on strategy
+                if strategy == 'Model Strategy':
+                    positions[strategy] = model_signal
+                elif strategy == 'Random Strategy':
+                    positions[strategy] = random_signal
+                # Buy and Hold always stays invested
+
+                # Update capital
+                strategies[strategy]['capital'] = capital
+                strategies[strategy]['history'].append(capital)
+
+            # Print monthly performance
+            month_str = current_date.strftime('%Y-%m')
+            return_str = f"{np.exp(cumulative_return) - 1:.2%}"
+            print(f"{month_str:^10} | {return_str:^12} | ", end="")
+            for strategy in ['Buy and Hold', 'Model Strategy', 'Random Strategy']:
+                capital = strategies[strategy]['capital']
+                print(f"${capital:,.2f} | ", end="")
+            print()
+
+    # Calculate final performance metrics
+    results = {
+        'initial_investment': initial_investment,
+        'final_values': {},
+        'total_returns': {},
+        'annualized_returns': {},
+        'history': {},
+        'dates': dates
+    }
+
+    # Calculate months passed
+    if len(dates) > 1:
+        years = (dates[-1] - dates[0]).days / 365.25
+    else:
+        years = 1  # Default to 1 year if not enough data
+
+    print("\nFinal Results:")
+    print("-" * 50)
+    for strategy in strategies:
+        history = strategies[strategy]['history']
+        final_value = history[-1]
+        total_return = (final_value / initial_investment) - 1
+        annualized_return = ((1 + total_return) ** (1 / years)) - 1 if years > 0 else 0
+
+        results['final_values'][strategy] = final_value
+        results['total_returns'][strategy] = total_return
+        results['annualized_returns'][strategy] = annualized_return
+        results['history'][strategy] = history
+
+        print(f"{strategy}:")
+        print(f"  Final Value: ${final_value:,.2f}")
+        print(f"  Total Return: {total_return:.2%}")
+        print(f"  Annualized Return: {annualized_return:.2%}")
+        print("-" * 50)
+
+    # Create performance chart
+    plt.figure(figsize=(12, 6))
+    for strategy in strategies:
+        plt.plot(dates, strategies[strategy]['history'][1:], label=strategy)
+
+    plt.title(f'Investment Strategy Comparison (${initial_investment:,.0f} Initial Investment)')
+    plt.xlabel('Date')
+    plt.ylabel('Portfolio Value ($)')
+    plt.grid(True, alpha=0.3)
+    plt.legend()
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.savefig('strategy_comparison.png')
+
+    # Create return comparison chart
+    returns = {strategy: (results['history'][strategy][-1] / initial_investment) - 1 for strategy in strategies}
+    plt.figure(figsize=(10, 6))
+    plt.bar(returns.keys(), [returns[s] * 100 for s in returns])
+    plt.title('Total Return Comparison (%)')
+    plt.ylabel('Return (%)')
+    plt.grid(axis='y', alpha=0.3)
+    for i, strategy in enumerate(returns):
+        plt.text(i, returns[strategy] * 100 + 1, f"{returns[strategy]:.2%}", ha='center')
+    plt.tight_layout()
+    plt.savefig('return_comparison.png')
+
+    print("\nCharts saved to 'strategy_comparison.png' and 'return_comparison.png'")
+
+    return results
 
 
 def load_model(filename: str = 'mixture_of_experts_model.pth',

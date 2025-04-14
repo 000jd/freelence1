@@ -5,7 +5,7 @@ from typing import Dict, Any, Tuple
 from config import get_config
 from data_preparation import MultiAssetDataset
 from training import train_mixture_of_experts, train_gating_with_rl
-from evaluation import evaluate_model, backtest_trading_strategy, save_model
+from evaluation import evaluate_model, backtest_trading_strategy, save_model, compare_investment_strategies
 
 
 def main(config_path: str = 'config.yaml', csv_path: str = None) -> Tuple[Any, Dict[str, Any], Dict[str, Any]]:
@@ -77,6 +77,10 @@ def main(config_path: str = 'config.yaml', csv_path: str = None) -> Tuple[Any, D
     # Backtest trading strategy
     print("Backtesting trading strategy...")
     backtest_results = backtest_trading_strategy(model, test_dataset, config)
+
+    # Compare investment strategies
+    print("Comparing investment strategies...")
+    strategy_results = compare_investment_strategies(model, test_dataset)
 
     # Save model
     save_model(model)
