@@ -732,7 +732,7 @@ def load_model(filename: str = 'mixture_of_experts_model.pth',
             'transformer': {
                 'd_model': config.get('model', 'transformer', {}).get('d_model', 64),
                 'nhead': config.get('model', 'transformer', {}).get('nhead', 4),
-                'num_layers': config.get('model', 'transformer', {}).get('num_layers', 2),
+                'num_layers': config.get('model', 'transformer', {}).get('num_layers', 1),
                 'dropout': config.get('model', 'transformer', {}).get('dropout', 0.1)
             },
             'gating': {

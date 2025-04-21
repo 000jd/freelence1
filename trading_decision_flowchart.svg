@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="900" height="1400" xmlns="http://www.w3.org/2000/svg">
+    <!-- Styles -->
+    <defs>
+        <style type="text/css">
+            .box { fill: white; stroke: #333; stroke-width: 2; }
+            .decision { fill: #fff4e6; }
+            .process { fill: #e1f3ff; }
+            .input { fill: #e6ffe6; }
+            .risk { fill: #ffe6e6; }
+            .text { font-family: Arial; font-size: 14px; }
+            .small-text { font-family: Arial; font-size: 12px; }
+            .arrow { fill: none; stroke: #666; stroke-width: 2; marker-end: url(#arrowhead); }
+        </style>
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#666"/>
+        </marker>
+    </defs>
+
+    <!-- Market Data Input -->
+    <rect x="300" y="20" width="300" height="80" class="box input"/>
+    <text x="320" y="50" class="text">Market Data Input:
+        <tspan x="320" y="70" class="small-text">- Price Data</tspan>
+        <tspan x="320" y="90" class="small-text">- Volume, Technical Indicators</tspan>
+    </text>
+
+    <!-- Model Predictions -->
+    <rect x="300" y="130" width="300" height="100" class="box process"/>
+    <text x="320" y="160" class="text">Get Model Predictions:
+        <tspan x="320" y="180" class="small-text">- Short-term Expert (1-3 days)</tspan>
+        <tspan x="320" y="200" class="small-text">- Medium-term Expert (1-2 weeks)</tspan>
+        <tspan x="320" y="220" class="small-text">- Long-term Expert (1-2 months)</tspan>
+    </text>
+
+    <!-- Confidence Check -->
+    <path d="M 450 260 L 550 310 L 450 360 L 350 310 Z" class="box decision"/>
+    <text x="400" y="315" class="text">Confidence > 0.8?</text>
+
+    <!-- Market Regime Check -->
+    <rect x="300" y="390" width="300" height="80" class="box process"/>
+    <text x="320" y="420" class="text">Market Regime Analysis:
+        <tspan x="320" y="440" class="small-text">- Volatility, Trend, Volume</tspan>
+        <tspan x="320" y="460" class="small-text">- Risk Sentiment</tspan>
+    </text>
+
+    <!-- Signal Generation -->
+    <path d="M 450 500 L 550 550 L 450 600 L 350 550 Z" class="box decision"/>
+    <text x="400" y="555" class="text">Combined Signal > 0.5?</text>
+
+    <!-- Position Check -->
+    <path d="M 450 630 L 550 680 L 450 730 L 350 680 Z" class="box decision"/>
+    <text x="380" y="685" class="text">Current Position?</text>
+
+    <!-- Risk Management -->
+    <rect x="300" y="760" width="300" height="120" class="box risk"/>
+    <text x="320" y="790" class="text">Risk Management Checks:
+        <tspan x="320" y="810" class="small-text">- Max Position Size (10% capital)</tspan>
+        <tspan x="320" y="830" class="small-text">- Stop Loss (2% per trade)</tspan>
+        <tspan x="320" y="850" class="small-text">- Max Drawdown (20%)</tspan>
+        <tspan x="320" y="870" class="small-text">- Portfolio Exposure</tspan>
+    </text>
+
+    <!-- Trade Execution -->
+    <rect x="300" y="910" width="300" height="100" class="box process"/>
+    <text x="320" y="940" class="text">Execute Trade:
+        <tspan x="320" y="960" class="small-text">- Set Entry/Exit Price</tspan>
+        <tspan x="320" y="980" class="small-text">- Place Orders with Stops</tspan>
+    </text>
+
+    <!-- Position Monitoring -->
+    <rect x="300" y="1040" width="300" height="100" class="box process"/>
+    <text x="320" y="1070" class="text">Monitor Position:
+        <tspan x="320" y="1090" class="small-text">- Update Trailing Stops</tspan>
+        <tspan x="320" y="1110" class="small-text">- Track P&L</tspan>
+    </text>
+
+    <!-- Arrows -->
+    <path d="M 450 100 L 450 130" class="arrow"/>
+    <path d="M 450 230 L 450 260" class="arrow"/>
+    <path d="M 450 360 L 450 390" class="arrow"/>
+    <path d="M 450 470 L 450 500" class="arrow"/>
+    <path d="M 450 600 L 450 630" class="arrow"/>
+    <path d="M 450 730 L 450 760" class="arrow"/>
+    <path d="M 450 880 L 450 910" class="arrow"/>
+    <path d="M 450 1010 L 450 1040" class="arrow"/>
+
+    <!-- Decision Labels -->
+    <text x="560" y="305" class="small-text">High Confidence</text>
+    <text x="250" y="305" class="small-text">Low Confidence</text>
+    <text x="560" y="545" class="small-text">Buy Signal</text>
+    <text x="250" y="545" class="small-text">Sell Signal</text>
+    <text x="560" y="675" class="small-text">Long</text>
+    <text x="250" y="675" class="small-text">None/Short</text>
+
+    <!-- Legend -->
+    <rect x="650" y="20" width="200" height="160" class="box"/>
+    <text x="670" y="45" class="text" style="font-weight: bold">Legend:</text>
+    
+    <rect x="670" y="60" width="20" height="20" class="box input"/>
+    <text x="700" y="75" class="small-text">Input Data</text>
+    
+    <rect x="670" y="90" width="20" height="20" class="box process"/>
+    <text x="700" y="105" class="small-text">Process</text>
+    
+    <path d="M 670 120 L 690 130 L 670 140 L 650 130 Z" class="box decision"/>
+    <text x="700" y="135" class="small-text">Decision</text>
+    
+    <rect x="670" y="150" width="20" height="20" class="box risk"/>
+    <text x="700" y="165" class="small-text">Risk Check</text>
+</svg>

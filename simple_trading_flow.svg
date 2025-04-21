@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="1000" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <style type="text/css">
+            .box { fill: white; stroke: black; stroke-width: 3; }
+            .decision { fill: #FFE4B5; }  /* Light orange */
+            .process { fill: #ADD8E6; }   /* Light blue */
+            .buy { fill: #90EE90; }       /* Light green */
+            .sell { fill: #FFB6C1; }      /* Light pink */
+            .text { font-family: Arial; font-size: 16px; font-weight: bold; }
+            .arrow { stroke: black; stroke-width: 3; fill: none; marker-end: url(#arrowhead); }
+        </style>
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="black"/>
+        </marker>
+    </defs>
+
+    <!-- Start -->
+    <rect x="300" y="50" width="200" height="60" rx="10" class="box process"/>
+    <text x="350" y="85" class="text" text-anchor="middle">START</text>
+
+    <!-- Get Market Data -->
+    <rect x="300" y="150" width="200" height="60" class="box process"/>
+    <text x="400" y="185" class="text" text-anchor="middle">Market Data</text>
+
+    <!-- Model Prediction -->
+    <rect x="300" y="250" width="200" height="60" class="box process"/>
+    <text x="400" y="285" class="text" text-anchor="middle">Model Prediction</text>
+
+    <!-- Signal Check -->
+    <path d="M 400 350 L 500 400 L 400 450 L 300 400 Z" class="box decision"/>
+    <text x="400" y="405" class="text" text-anchor="middle">Signal > 0.5?</text>
+
+    <!-- Buy Signal -->
+    <rect x="500" y="450" width="150" height="60" class="box buy"/>
+    <text x="575" y="485" class="text" text-anchor="middle">BUY</text>
+
+    <!-- Sell Signal -->
+    <rect x="150" y="450" width="150" height="60" class="box sell"/>
+    <text x="225" y="485" class="text" text-anchor="middle">SELL</text>
+
+    <!-- Risk Check -->
+    <rect x="300" y="550" width="200" height="80" class="box process"/>
+    <text x="400" y="585" class="text" text-anchor="middle">Risk Check</text>
+    <text x="400" y="605" font-size="12" text-anchor="middle">(Position Size, Stop Loss)</text>
+
+    <!-- Execute Trade -->
+    <rect x="300" y="670" width="200" height="60" class="box process"/>
+    <text x="400" y="705" class="text" text-anchor="middle">Execute Trade</text>
+
+    <!-- Monitor -->
+    <rect x="300" y="770" width="200" height="60" class="box process"/>
+    <text x="400" y="805" class="text" text-anchor="middle">Monitor Position</text>
+
+    <!-- Arrows -->
+    <path d="M 400 110 L 400 150" class="arrow"/>
+    <path d="M 400 210 L 400 250" class="arrow"/>
+    <path d="M 400 310 L 400 350" class="arrow"/>
+    <path d="M 500 400 L 575 400 L 575 450" class="arrow"/>
+    <path d="M 300 400 L 225 400 L 225 450" class="arrow"/>
+    <path d="M 575 510 L 575 590 L 500 590" class="arrow"/>
+    <path d="M 225 510 L 225 590 L 300 590" class="arrow"/>
+    <path d="M 400 630 L 400 670" class="arrow"/>
+    <path d="M 400 730 L 400 770" class="arrow"/>
+
+    <!-- Labels -->
+    <text x="525" y="380" font-size="14">Yes (Buy)</text>
+    <text x="275" y="380" font-size="14">No (Sell)</text>
+
+    <!-- Legend -->
+    <rect x="600" y="50" width="150" height="160" class="box"/>
+    <text x="620" y="80" class="text" font-size="14">Legend:</text>
+    <rect x="620" y="90" width="20" height="20" class="box process"/>
+    <text x="650" y="105" font-size="12">Process</text>
+    <path d="M 620 120 L 640 130 L 620 140 L 600 130 Z" class="box decision"/>
+    <text x="650" y="135" font-size="12">Decision</text>
+    <rect x="620" y="150" width="20" height="20" class="box buy"/>
+    <text x="650" y="165" font-size="12">Buy Signal</text>
+    <rect x="620" y="180" width="20" height="20" class="box sell"/>
+    <text x="650" y="195" font-size="12">Sell Signal</text>
+</svg>

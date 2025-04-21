@@ -45,7 +45,7 @@ training:
   early_stopping:
     min_delta: 0.001
     patience: 10
-  epochs: 50
+  epochs: 100
   focal_loss:
     alpha: 0.25
     gamma: 2

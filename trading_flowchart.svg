@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="1200" xmlns="http://www.w3.org/2000/svg">
+    <!-- Styles -->
+    <defs>
+        <style type="text/css">
+            .box { fill: white; stroke: #333; stroke-width: 2; }
+            .decision { fill: #f0f0f0; }
+            .process { fill: #e1f3ff; }
+            .text { font-family: Arial; font-size: 14px; }
+            .arrow { fill: none; stroke: #666; stroke-width: 2; marker-end: url(#arrowhead); }
+        </style>
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#666"/>
+        </marker>
+    </defs>
+
+    <!-- Start -->
+    <rect x="350" y="20" width="100" height="50" rx="25" class="box process"/>
+    <text x="375" y="50" class="text">Start</text>
+
+    <!-- Get Market Data -->
+    <rect x="300" y="100" width="200" height="60" class="box process"/>
+    <text x="330" y="135" class="text">Get Market Data:
+        - Expert Inputs
+        - Market Conditions</text>
+
+    <!-- Model Prediction -->
+    <rect x="300" y="190" width="200" height="60" class="box process"/>
+    <text x="340" y="225" class="text">Get Model Predictions:
+        - Short-term Expert
+        - Medium-term Expert
+        - Long-term Expert</text>
+
+    <!-- Combine Predictions -->
+    <rect x="300" y="280" width="200" height="60" class="box process"/>
+    <text x="350" y="315" class="text">Combine Predictions
+        using Gating Weights</text>
+
+    <!-- Trading Signal Decision -->
+    <path d="M 400 370 L 500 420 L 400 470 L 300 420 Z" class="box decision"/>
+    <text x="350" y="425" class="text">Combined
+        Prediction > 0.5?</text>
+
+    <!-- Position Check -->
+    <path d="M 400 500 L 500 550 L 400 600 L 300 550 Z" class="box decision"/>
+    <text x="350" y="555" class="text">Current
+        Position?</text>
+
+    <!-- Risk Management -->
+    <rect x="300" y="630" width="200" height="80" class="box process"/>
+    <text x="320" y="660" class="text">Risk Management:
+        - Max Loss Check
+        - Trailing Stop
+        - Position Size Adj.</text>
+
+    <!-- Execute Trade -->
+    <rect x="300" y="740" width="200" height="60" class="box process"/>
+    <text x="350" y="775" class="text">Execute Trade:
+        Update Position</text>
+
+    <!-- Update Portfolio -->
+    <rect x="300" y="830" width="200" height="60" class="box process"/>
+    <text x="350" y="865" class="text">Update Portfolio:
+        Calculate Returns</text>
+
+    <!-- Next Day -->
+    <rect x="300" y="920" width="200" height="50" class="box process"/>
+    <text x="370" y="950" class="text">Move to Next Day</text>
+
+    <!-- Arrows -->
+    <path d="M 400 70 L 400 100" class="arrow"/>
+    <path d="M 400 160 L 400 190" class="arrow"/>
+    <path d="M 400 250 L 400 280" class="arrow"/>
+    <path d="M 400 340 L 400 370" class="arrow"/>
+    <path d="M 400 470 L 400 500" class="arrow"/>
+    <path d="M 400 600 L 400 630" class="arrow"/>
+    <path d="M 400 710 L 400 740" class="arrow"/>
+    <path d="M 400 800 L 400 830" class="arrow"/>
+    <path d="M 400 890 L 400 920" class="arrow"/>
+
+    <!-- Decision Labels -->
+    <text x="510" y="415" class="text">Yes (Buy Signal)</text>
+    <text x="250" y="415" class="text">No (Sell Signal)</text>
+    <text x="510" y="545" class="text">Long</text>
+    <text x="250" y="545" class="text">Short/None</text>
+
+    <!-- Legend -->
+    <rect x="600" y="20" width="150" height="120" class="box"/>
+    <text x="620" y="45" class="text" style="font-weight: bold">Legend:</text>
+    <rect x="620" y="60" width="20" height="20" class="box process"/>
+    <text x="650" y="75" class="text">Process</text>
+    <path d="M 620 90 L 640 100 L 620 110 L 600 100 Z" class="box decision"/>
+    <text x="650" y="105" class="text">Decision</text>
+</svg>
